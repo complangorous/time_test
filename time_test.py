@@ -40,8 +40,7 @@ parser.add_argument('num_tests', type=int,
 # output file
 parser.add_argument('--dest', nargs='?',
 		    const=None, default=None,
-		    help='(Optional) Specify the destination of the output file. Default behavior
-			  is to write the file to the directory of time_test.py')
+		    help='(Optional) Specify the destination of the output file. Default behavior is to write the file to the directory of time_test.py')
 args = parser.parse_args()
 
 # open file containing script list
