@@ -1,4 +1,4 @@
-#!/usr/bin/env 
+#!/usr/bin/env python
 
 '''
         Performs n time tests on a list of python
