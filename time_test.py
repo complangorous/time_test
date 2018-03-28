@@ -5,6 +5,18 @@
         scripts to determine if their average run-
         time meet Lambda's runtime requirements,
         and writes the results to a tsv.
+
+	NOTE: If running time_test in an ssh sess-
+	ion, be sure to run it with nohup, 
+	
+	$ nohup python time_test.py file_list.txt num_test &
+
+	if you are passing it an especially large
+	number of files to test, or are testing
+	them for an especially large value of 
+	num-tests. Using nohup will detatch the
+	process from your console instance, so it
+	will continue running if the pipe breaks.	
 '''
 
 
@@ -44,7 +56,6 @@ for script in script:
         for n in range(args.num_tests):
                 print 'Running ... {0} {1} {2}/{3}'.format(script, '\n', str(n+1), args.num_tests)
                 start = time.time()
-
 
                 result = os.system('python {}'.format(script))
                 # if os.system('python {script}') returns 0, 
