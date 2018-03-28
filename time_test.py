@@ -61,12 +61,12 @@ for script in script:
                 # if os.system('python {script}') returns 0, 
                 # no error was encountered.
                 if result != 0:
-                        columns_dict['Run {}: Successful Exit'.format(str(n+1))].append(True)
+                        columns_dict['Run {}: Successful Exit'.format(str(n+1))].append(False)
                         runtime = time.time() - start
                         columns_dict['Runtime {}'.format(str(n+1))].append(runtime)
                         print '{0} Error encountered while running {1} --- executed in {2} seconds {0}'.format('\n', script, runtime)
                 else:
-                      columns_dict['Run {}: Successful Exit'.format(str(n+1))].append(False)
+			columns_dict['Run {}: Successful Exit'.format(str(n+1))].append(True)
                         runtime = time.time() - start
                         columns_dict['Runtime {}'.format(str(n+1))].append(runtime)
                         print '{0} Done executing {1} --- executed in {2} seconds {0}'.format('\n', script, runtime)
