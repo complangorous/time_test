@@ -48,7 +48,7 @@ args = parser.parse_args()
 scripts = open(args.scripts).readlines()
 scripts = [script.rstrip('\n') for script in scripts]
 runtime_cols = []
-columns_dict = {'Script': [], 'Average Case (Minutes)': []}
+columns_dict = {'Script': [], 'Average Case (Minutes)': [], 'Ready to migrate': []}
 
 # populate columns_dict with num_tests pairs of
 # <<Runtime {} / Run {}: Successful Exit>> columns
@@ -62,7 +62,7 @@ for n in range(args.num_tests):
 
 for script in scripts:
         for n in range(args.num_tests):
-                print '{0} Running ... {1} {2}/{3}'.format('\n', script,  str(n+1), args.num_tests)
+                print('{0} Running ... {1} {2}/{3}'.format('\n', script,  str(n+1), args.num_tests))
                 start = time.time()
 
                 result = os.system('python {}'.format(script))
@@ -72,16 +72,22 @@ for script in scripts:
                         columns_dict['Run {}: Successful Exit'.format(str(n+1))].append(False)
                         runtime = time.time() - start
                         columns_dict['Runtime {}'.format(str(n+1))].append(runtime)
-                        print '{0} Error encountered while running {1} --- executed in {2:.2f} seconds {0}'.format('\n', script, runtime)
+                        print('{0} Error encountered while running {1} --- executed in {2:.2f} seconds {0}'.format('\n', script, runtime))
                 else:
-			columns_dict['Run {}: Successful Exit'.format(str(n+1))].append(True)
+                        columns_dict['Run {}: Successful Exit'.format(str(n+1))].append(True)
                         runtime = time.time() - start
                         columns_dict['Runtime {}'.format(str(n+1))].append(runtime)
-                        print '{0} Done executing {1} --- executed in {2:.2f} seconds {0}'.format('\n', script, runtime)
+                        print('{0} Done executing {1} --- executed in {2:.2f} seconds {0}'.format('\n', script, runtime))
 
         # get the average performance for the script, in minutes
         columns_dict['Average Case (Minutes)'].append((sum([columns_dict[x][-1] for x in runtime_cols]) / args.num_tests) / 60.0)
         columns_dict['Script'].append(script)
+
+        exit_statuses = [columns_dict[p][-1] for p in [q for q in columns_dict.keys() if 'Success' in q]]
+        if False in exit_statuses:
+                columns_dict['Ready to migrate'].append(False)
+        else:
+                columns_dict['Ready to migrate'].append(True)
 
 columns_dict['Under time limit'] = [(True if z < 5.0 else False) for z in columns_dict['Average Case (Minutes)']]
 df = pd.DataFrame(columns_dict)
@@ -100,16 +106,17 @@ for n in range(args.num_tests):
         cols.append(exit_statuses.pop(0))
 cols.append('Average Case (Minutes)')
 cols.append('Under time limit')
+cols.append('Ready to migrate')
 
 df = df[cols]
-print df
+print(df)
 
 from datetime import datetime
 curr_date = datetime.now().date()
 curr_date = str(curr_date)
 
 if args.dest is None:
-	df.to_csv('{1}_time_test_results.tsv'.format(curr_date), sep='\t', index=False)
+	df.to_csv('{0}_time_test_results.tsv'.format(curr_date), sep='\t', index=False)
 else:
 	df.to_csv('{0}/{1}_time_test_results.tsv'.format(args.dest, curr_date), sep='\t', index=False)
 
