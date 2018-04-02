@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
 '''
-        Performs n time tests on a list of python
-        scripts to determine if their average run-
-        time meet Lambda's runtime requirements,
-        and writes the results to a tsv.
+    Performs n time tests on a list of python
+    scripts to determine if their average run-
+    time meet Lambda's runtime requirements,
+    and writes the results to a tsv.
 
 	NOTE: If running time_test in an ssh sess-
-	ion, be sure to run it with nohup,
+	ion on linux, be sure to run it with nohup,
 
 	$ nohup python time_test.py file_list.txt num_test &
 
-	if you are passing it an especially large
+	 .. if you are passing it an especially large
 	number of files to test, or are testing
 	them for an especially large value of
 	num-tests. Using nohup will detatch the
@@ -66,8 +66,8 @@ for script in scripts:
                                                            str(n+1),
                                                            args.num_tests))
                 start = time.time()
-
                 result = os.system('python {}'.format(script))
+
                 # If os.system('python {script}') returns 0,
                 # no error was encountered.
                 if result != 0:
@@ -96,34 +96,34 @@ for script in scripts:
 
 columns_dict['Under time limit'] = [(True if z < 5.0 else False)
                                      for z in columns_dict['Average Case (Minutes)']]
-df = pd.DataFrame(columns_dict)
+dataframe = pd.DataFrame(columns_dict)
 
 # Orders the columns corresponding to
 # each run so they follow the pattern:
 # Runtime {} | Runtime {}: Successful Exit
-exit_statuses = [x for x in df.columns.tolist() if 'Successful' in x]
+exit_statuses = [x_col for x_col in dataframe.columns.tolist() if 'Successful' in x_col]
 exit_statuses.sort()
-runtimes = [y for y in df.columns.tolist() if 'Runtime' in y]
+runtimes = [y_col for y_col in dataframe.columns.tolist() if 'Runtime' in y_col]
 runtimes.sort()
 
-cols = ['Script']
+ordered_columns = ['Script']
 for n in range(args.num_tests):
-        cols.append(runtimes.pop(0))
-        cols.append(exit_statuses.pop(0))
-cols.append('Average Case (Minutes)')
-cols.append('Under time limit')
-cols.append('Ready to migrate')
+        ordered_columns.append(runtimes.pop(0))
+        ordered_columns.append(exit_statuses.pop(0))
+ordered_columns.append('Average Case (Minutes)')
+ordered_columns.append('Under time limit')
+ordered_columns.append('Ready to migrate')
 
-df = df[cols]
-print(df)
+dataframe = dataframe[ordered_columns]
+print(dataframe)
 
 from datetime import datetime
 curr_date = datetime.now().date()
 curr_date = str(curr_date)
 
 if args.dest is None:
-	df.to_csv('{0}_time_test_results.tsv'.format(curr_date), sep='\t', index=False)
+	dataframe.to_csv('{0}_time_test_results.tsv'.format(curr_date), sep='\t', index=False)
 else:
-	df.to_csv('{0}/{1}_time_test_results.tsv'.format(args.dest, curr_date),
+	dataframe.to_csv('{0}/{1}_time_test_results.tsv'.format(args.dest, curr_date),
                                               sep='\t',
                                               index=False)
