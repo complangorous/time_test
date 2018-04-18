@@ -13,6 +13,8 @@ and writes the results to a tsv.
 
 `num_tests` (int) The number of times each script will be run.
 
+`--dest __` (keyword + path) Allows the specification of the output file's destination.
+
 **NOTE**: If running time_test in an ssh sess-ion on linux, be sure to run it with nohup,
 
 `$ nohup python time_test.py file_list.txt num_test &`
